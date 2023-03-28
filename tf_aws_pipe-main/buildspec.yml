@@ -3,30 +3,32 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.10
+      python: 3.9
     commands:
-      - mkdir terraform  # Create the terraform directory
-      # Check if Terraform is already installed
-      - if [ ! -x "$(command -v terraform)" ]; then
-          echo Installing Terraform;
-          curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.1.4/terraform_1.1.4_linux_amd64.zip;
-          unzip -o /tmp/terraform.zip -d /usr/local/bin/;
-        fi
-      - terraform -version
+      # Install AWS CLI
+      - apt-get update && apt-get install -y awscli
+      # Install Terraform
+      - curl -LO https://releases.hashicorp.com/terraform/1.1.4/terraform_1.1.4_linux_amd64.zip
+      - unzip terraform_1.1.4_linux_amd64.zip
+      - mv terraform /usr/local/bin/
+      # Print versions of AWS CLI and Terraform
+      - aws --version
+      - terraform --version
   build:
     commands:
-      - echo Building Infrastructure with Terraform
+      # Switch to the Terraform directory
       - cd terraform
+      # Initialize the Terraform working directory
       - terraform init
+      # Validate the Terraform configuration
       - terraform validate
-      - terraform plan -out=terraform plan
-      - terraform show -json tfplan > tfplan.json # save plan as JSON for later use
+      # Plan the Terraform changes
+      - terraform plan -out=tfplan
+      # Output the Terraform plan in JSON format
+      - terraform show -json tfplan > tfplan.json
   post_build:
     commands:
-      - echo Deploying Infrastructure with Terraform
+      # Switch to the Terraform directory
       - cd terraform
-      # Check if there are changes to apply
-      - terraform plan -detailed-exitcode -out=tfplan || PLAN_EXIT_CODE=$?
-      # If there are changes, apply the plan
-      - if [ $PLAN_EXIT_CODE -eq 2 ]; then terraform apply -auto-approve tfplan; fi
-
+      # Apply the Terraform changes
+      - terraform apply -auto-approve tfplan
