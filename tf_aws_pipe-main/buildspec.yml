@@ -1,34 +1,9 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      python: 3.10
-    commands:
-      # Install AWS CLI
-      - apt-get update && apt-get install -y awscli
-      # Install Terraform
-      - curl -LO https://releases.hashicorp.com/terraform/1.1.4/terraform_1.1.4_linux_amd64.zip
-      - unzip terraform_1.1.4_linux_amd64.zip
-      - mv terraform /usr/local/bin/
-      # Print versions of AWS CLI and Terraform
-      - aws --version
-      - terraform --version
   build:
     commands:
-      # Switch to the Terraform directory
-      - cd terraform
-      # Initialize the Terraform working directory
-      - terraform init
-      # Validate the Terraform configuration
-      - terraform validate
-      # Plan the Terraform changes
-      - terraform plan -out=tfplan
-      # Output the Terraform plan in JSON format
-      - terraform show -json tfplan > tfplan.json
-  post_build:
-    commands:
-      # Switch to the Terraform directory
-      - cd terraform
-      # Apply the Terraform changes
-      - terraform apply -auto-approve tfplan
+      - echo "Hello, world!"
+artifacts:
+  files:
+    - '**/*'
