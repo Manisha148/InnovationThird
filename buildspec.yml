@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # Download and install Terraform
+      curl -O https://releases.hashicorp.com/terraform/1.0.7/terraform_1.0.7_linux_amd64.zip
+      unzip terraform_1.0.7_linux_amd64.zip
+      chmod +x terraform
+      mv terraform /usr/local/bin/
+  build:
+    commands:
+      # Build your stages
+      terraform init
+      terraform plan
+      terraform apply -auto-approve
