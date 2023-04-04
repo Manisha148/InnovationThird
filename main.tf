@@ -50,25 +50,3 @@ resource "aws_security_group" "example" {
   }
 }
 
-# Buildspec file for AWS CodePipeline
-resource "aws_codebuild_project" "example" {
-  name          = "example-project"
-  description   = "Example CodeBuild project"
-  build_timeout = 60
-
-  environment {
-    compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:5.0"
-    type         = "LINUX_CONTAINER"
-  }
-
-  artifacts {
-    type = "CODEPIPELINE"
-  }
-
-  source {
-    type            = "CODEPIPELINE"
-    buildspec       = file("buildspec.yml")
-    report_build_status = true
-  }
-}
