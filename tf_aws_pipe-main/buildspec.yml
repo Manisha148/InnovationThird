@@ -1,41 +1,21 @@
-# version: 0.2
-
-# phases:
-#   build:
-#     commands:
-#       - echo "Hello, world!"
-# artifacts:
-#   files:
-#     - '**/*'
 version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      python: 3.9
     commands:
-      # Check if Terraform is already installed
-      - if [ ! -x "$(command -v terraform)" ]; then
-          echo Installing Terraform;
-          curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.1.4/terraform_1.1.4_linux_amd64.zip;
-          unzip -o /tmp/terraform.zip -d /usr/local/bin/;
-        fi
-      - terraform -version
+      # Download and install Terraform
+      curl -O https://releases.hashicorp.com/terraform/1.0.7/terraform_1.0.7_linux_amd64.zip
+      unzip terraform_1.0.7_linux_amd64.zip
+      chmod +x terraform
+      mv terraform /usr/local/bin/
   build:
     commands:
-      - echo Building Infrastructure with Terraform
-      - ls
-      - pwd
-      # - cd terraform
-      - terraform init
-      - terraform validate
-      - terraform plan -out=tfplan
-      - terraform show -json tfplan > tfplan.json # save plan as JSON for later use
-  post_build:
-    commands:
-      - echo Deploying Infrastructure with Terraform
-      # - cd terraform
-      # Check if there are changes to apply
-      - terraform plan -detailed-exitcode -out=tfplan || PLAN_EXIT_CODE=$?
-      # If there are changes, apply the plan
-      - if [ $PLAN_EXIT_CODE -eq 2 ]; then terraform apply -auto-approve tfplan; fi
+      # Build your stages
+      terraform init
+      terraform plan
+      terraform apply -auto-approve
+artifacts:
+  files:
+    - stage_1.tf
+    - stage_2.tf
+    - stage_3.tf
