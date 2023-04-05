@@ -9,7 +9,7 @@ resource "aws_instance" "example" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "example" {
-  bucket = "bucky8o08i87j"
+  bucket = "bucketthirdinnovation9875656"
   acl    = "private"
 
   tags = {
